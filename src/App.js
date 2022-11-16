@@ -6,6 +6,9 @@ import Index from "./pages/Index";
 import AddEmployee from "./pages/AddEmployee";
 import Credit from "./pages/Credit";
 import EmployeePage from "./pages/Employee";
+import Voting from "./pages/Voting";
+import EmployeeView from "./components/Modals/EmployeeView";
+import AddProposal from "./pages/AddProposal";
 
 function App() {
 	return (
@@ -17,6 +20,8 @@ function App() {
 						<Route path="/employee" element={<EmployeePage />} />
 						<Route path="/add-employee" element={<AddEmployee />} />
 						<Route path="/credits" element={<Credit />} />
+						<Route path="/voting" element={<Voting />} />
+						<Route path="/add-proposal" element={<AddProposal />} />
 					</Routes>
 				</Layout>
 			</GlobalProvider>

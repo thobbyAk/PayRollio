@@ -55,3 +55,8 @@ export const removeHttp = (url) => {
 export const covertToUpperCase = (data) => {
 	return data.toUpperCase();
 };
+
+export const toTimestamp = (date) => {
+	var dateum = Date.parse(date);
+	return dateum / 1000;
+};

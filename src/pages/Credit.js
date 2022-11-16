@@ -23,7 +23,7 @@ const Credit = () => {
 					<button className="block rounded-xl border border-gray-800 p-8 shadow-xl bg-[#1d1921]  transition hover:border-pink-500/10 hover:shadow-pink-500/10">
 						<div className="flex justify-between items-center">
 							<ClockIcon className="text-white w-12 h-12" />
-							<div className="text-white text-xl font-bold">1.34 EMP</div>
+							<div className="text-white text-xl font-bold">1.34 EMPUSD</div>
 						</div>
 
 						<h2 className="mt-4 text-xl text-left font-bold text-white">
@@ -38,7 +38,7 @@ const Credit = () => {
 					<button className="block rounded-xl border border-gray-800 p-8 shadow-xl bg-[#1d1921]  transition hover:border-pink-500/10 hover:shadow-pink-500/10">
 						<div className="flex justify-between items-center">
 							<CheckBadgeIcon className="text-white w-12 h-12" />
-							<div className="text-white text-xl font-bold">1.34 EMP</div>
+							<div className="text-white text-xl font-bold">1.34 EMPUSD</div>
 						</div>
 
 						<h2 className="mt-4 text-xl text-left font-bold text-white">Benefits</h2>
@@ -51,7 +51,7 @@ const Credit = () => {
 					<button className="block rounded-xl border border-gray-800 p-8 shadow-xl bg-[#1d1921]  transition hover:border-pink-500/10 hover:shadow-pink-500/10">
 						<div className="flex justify-between items-center">
 							<UsersIcon className="text-white w-12 h-12" />
-							<div className="text-white text-xl font-bold">1.34 EMP</div>
+							<div className="text-white text-xl font-bold">1.34 EMPUSD</div>
 						</div>
 
 						<h2 className="mt-4 text-xl text-left font-bold text-white">
@@ -66,7 +66,7 @@ const Credit = () => {
 					<button className="block rounded-xl border border-gray-800 p-8 shadow-xl bg-[#1d1921]  transition hover:border-pink-500/10 hover:shadow-pink-500/10">
 						<div className="flex justify-between items-center">
 							<AcademicCapIcon className="text-white w-12 h-12" />
-							<div className="text-white text-xl font-bold">1.34 MATIC</div>
+							<div className="text-white text-xl font-bold">1.34 EMPUSD</div>
 						</div>
 
 						<h2 className="mt-4 text-xl text-left font-bold text-white">Training</h2>

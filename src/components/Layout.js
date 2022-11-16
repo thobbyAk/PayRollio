@@ -1,6 +1,7 @@
 import { Fragment, useState, useEffect, useContext } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import {
+	ArchiveBoxIcon,
 	CreditCardIcon,
 	HomeIcon,
 	UsersIcon,
@@ -11,14 +12,46 @@ import Header from "./Header";
 import Web3Modal from "web3modal";
 import { ethers, providers } from "ethers";
 import { Link, useLocation } from "react-router-dom";
+import { employeeContractAddress } from "../config";
+import Employee from "../abi/Employee.json";
 
 function classNames(...classes) {
 	return classes.filter(Boolean).join(" ");
 }
 const Layout = ({ children }) => {
 	const location = useLocation();
-	const { addUser } = useContext(GlobalContext);
+	const [admin, setAdmin] = useState(false);
+	const { addUser, users } = useContext(GlobalContext);
+	function getLocationPath() {
+		return location.pathname;
+	}
 	const navigation = [
+		{
+			name: "Dashboard",
+			href: "/",
+			icon: HomeIcon,
+			current: getLocationPath() === "/" ? true : false,
+		},
+		{
+			name: "Employee",
+			href: "/employee",
+			icon: UsersIcon,
+			current: getLocationPath() === "/employee" ? true : false,
+		},
+		{
+			name: "Credits",
+			href: "/credits",
+			icon: CreditCardIcon,
+			current: getLocationPath() === "/credits" ? true : false,
+		},
+		{
+			name: "Governance",
+			href: "/voting",
+			icon: ArchiveBoxIcon,
+			current: getLocationPath() === "/voting" ? true : false,
+		},
+	];
+	const userNavigation = [
 		{
 			name: "Dashboard",
 			href: "/",
@@ -37,12 +70,38 @@ const Layout = ({ children }) => {
 			icon: CreditCardIcon,
 			current: location.pathname === "/credits" ? true : false,
 		},
+		{
+			name: "Governance",
+			href: "/voting",
+			icon: ArchiveBoxIcon,
+			current: location.pathname === "/voting" ? true : false,
+		},
 	];
 
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 	const [account, setAccount] = useState("");
 	const [walletConnected, setWalletConnected] = useState(false);
 	const [web3Modal, setWeb3Modal] = useState(null);
+	const [currentMenu, setCurrentMenu] = useState(navigation);
+
+	async function checkIsAdmin() {
+		const provider = new ethers.providers.JsonRpcProvider(
+			`https://rpc.ankr.com/polygon_mumbai`
+		);
+		const employeeContract = new ethers.Contract(
+			employeeContractAddress,
+			Employee.abi,
+			provider
+		);
+		console.log("useAddress", users.account);
+		if (users.account !== "") {
+			const isdata = await employeeContract.isAdmin(users.account);
+			console.log("Admindat", isdata);
+			isdata == true && setCurrentMenu(navigation);
+			isdata == false && setCurrentMenu(userNavigation);
+			setAdmin(isdata);
+		}
+	}
 
 	useEffect(() => {
 		const providerOptions = {};
@@ -66,10 +125,12 @@ const Layout = ({ children }) => {
 	async function addListeners(web3ModalProvider) {
 		web3ModalProvider.on("accountsChanged", (accounts) => {
 			connectWallet();
+			checkIsAdmin();
 		});
 
 		// Subscribe to chainId change
 		web3ModalProvider.on("chainChanged", (chainId) => {
+			checkIsAdmin();
 			connectWallet();
 		});
 	}
@@ -81,6 +142,9 @@ const Layout = ({ children }) => {
 		setWalletConnected(false);
 		// removeAccount();
 	};
+	useEffect(() => {
+		checkIsAdmin();
+	}, []);
 
 	async function connectWallet() {
 		const provider = await web3Modal.connect();
@@ -90,12 +154,12 @@ const Layout = ({ children }) => {
 		const userBalance = await ethersProvider.getBalance(userAddress);
 		console.log("userBalance", ethers.utils.formatUnits(userBalance));
 		setAccount(userAddress);
-
-		setWalletConnected(true);
 		addUser({
 			account: userAddress,
 			userBalance: userBalance,
 		});
+		setWalletConnected(true);
+
 		// console.log("userAccount", userAccount);
 	}
 
@@ -160,7 +224,7 @@ const Layout = ({ children }) => {
 								</div>
 								<div className="mt-5 h-0 flex-1 overflow-y-auto">
 									<nav className="space-y-1 px-2">
-										{navigation.map((item) => (
+										{currentMenu.map((item) => (
 											<a
 												key={item.name}
 												href={item.href}
@@ -208,7 +272,7 @@ const Layout = ({ children }) => {
 					</div>
 					<div className="flex flex-1 flex-col overflow-y-auto">
 						<nav className="flex-1 space-y-1 px-2 py-4">
-							{navigation.map((item) => (
+							{currentMenu.map((item) => (
 								<Link
 									key={item.name}
 									to={item.href}
