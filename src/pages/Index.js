@@ -212,7 +212,7 @@ const Index = () => {
 													{employee?.rank === 3 ? "Engineering Manager" : ""}
 												</td>
 												<td className="whitespace-nowrap py-4 px-3 text-sm text-white">
-													{employee.payDay} days
+													{Math.ceil(employee.payDay)} days
 												</td>
 											</tr>
 										))}

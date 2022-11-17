@@ -171,7 +171,7 @@ const EmployeePage = () => {
 												{employe?.rank === 3 ? "Engineering Manager" : ""}
 											</td>
 											<td className="whitespace-nowrap py-4 px-3 text-sm text-white">
-												{employe?.payDay} days
+												{Math.ceil(employe.payDay)} days days
 											</td>
 											<td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 md:pr-0">
 												<button
