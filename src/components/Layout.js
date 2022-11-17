@@ -11,7 +11,7 @@ import { GlobalContext } from "../context/GlobalState";
 import Header from "./Header";
 import Web3Modal from "web3modal";
 import { ethers, providers } from "ethers";
-import { Link, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { employeeContractAddress } from "../config";
 import Employee from "../abi/Employee.json";
 
@@ -36,7 +36,7 @@ const Layout = ({ children }) => {
 			name: "Employee",
 			href: "/employee",
 			icon: UsersIcon,
-			current: getLocationPath() === "/employee" ? true : false,
+			current: getLocationPath().toLowerCase() === "/employee" ? true : false,
 		},
 		{
 			name: "Credits",
@@ -83,6 +83,7 @@ const Layout = ({ children }) => {
 	const [walletConnected, setWalletConnected] = useState(false);
 	const [web3Modal, setWeb3Modal] = useState(null);
 	const [currentMenu, setCurrentMenu] = useState(navigation);
+	const chainIdNumber = 80001;
 
 	async function checkIsAdmin() {
 		const provider = new ethers.providers.JsonRpcProvider(
@@ -125,12 +126,12 @@ const Layout = ({ children }) => {
 	async function addListeners(web3ModalProvider) {
 		web3ModalProvider.on("accountsChanged", (accounts) => {
 			connectWallet();
-			checkIsAdmin();
+			// checkIsAdmin();
 		});
 
 		// Subscribe to chainId change
 		web3ModalProvider.on("chainChanged", (chainId) => {
-			checkIsAdmin();
+			// checkIsAdmin();
 			connectWallet();
 		});
 	}
@@ -142,9 +143,9 @@ const Layout = ({ children }) => {
 		setWalletConnected(false);
 		// removeAccount();
 	};
-	useEffect(() => {
-		checkIsAdmin();
-	}, []);
+	// useEffect(() => {
+	// 	checkIsAdmin();
+	// }, []);
 
 	async function connectWallet() {
 		const provider = await web3Modal.connect();
@@ -153,14 +154,43 @@ const Layout = ({ children }) => {
 		const userAddress = await ethersProvider.getSigner().getAddress();
 		const userBalance = await ethersProvider.getBalance(userAddress);
 		console.log("userBalance", ethers.utils.formatUnits(userBalance));
+		const { chainId } = await ethersProvider.getNetwork();
 		setAccount(userAddress);
 		addUser({
 			account: userAddress,
 			userBalance: userBalance,
 		});
 		setWalletConnected(true);
+		if (chainId !== 8001) {
+			checkifUserisConnectedToMumbai();
+		}
 
 		// console.log("userAccount", userAccount);
+	}
+
+	async function checkifUserisConnectedToMumbai() {
+		try {
+			await window.ethereum.request({
+				method: "wallet_switchEthereumChain",
+				params: [{ chainId: "0x13881" }],
+			});
+			console.log("here switch");
+		} catch (err) {
+			// This error code indicates that the chain has not been added to MetaMask
+			if (err.code === 4902) {
+				await window.ethereum.request({
+					method: "wallet_addEthereumChain",
+					params: [
+						{
+							chainName: "Mumbai Testnet",
+							chainId: "0x13881",
+							nativeCurrency: { name: "MATIC", decimals: 18, symbol: "MATIC" },
+							rpcUrls: ["https://rpc-mumbai.maticvigil.com/"],
+						},
+					],
+				});
+			}
+		}
 	}
 
 	return (
@@ -225,9 +255,10 @@ const Layout = ({ children }) => {
 								<div className="mt-5 h-0 flex-1 overflow-y-auto">
 									<nav className="space-y-1 px-2">
 										{currentMenu.map((item) => (
-											<a
+											<NavLink
 												key={item.name}
-												href={item.href}
+												exact
+												to={item.href}
 												className={classNames(
 													item.current
 														? "bg-[#30253f] text-[#9A76D9]"
@@ -245,7 +276,7 @@ const Layout = ({ children }) => {
 													aria-hidden="true"
 												/>
 												{item.name}
-											</a>
+											</NavLink>
 										))}
 									</nav>
 								</div>
@@ -273,15 +304,14 @@ const Layout = ({ children }) => {
 					<div className="flex flex-1 flex-col overflow-y-auto">
 						<nav className="flex-1 space-y-1 px-2 py-4">
 							{currentMenu.map((item) => (
-								<Link
-									key={item.name}
+								<NavLink
+									key={item?.name}
 									to={item.href}
-									className={classNames(
-										item.current
-											? "bg-[#30253f] text-[#9A76D9]"
-											: "text-[#9A76D9] hover:bg-[#30253f] hover:text-[#9A76D9]",
-										"group flex items-center px-2 py-2 text-sm font-medium rounded-md"
-									)}
+									className={({ isActive }) =>
+										isActive
+											? "bg-[#30253f] text-[#9A76D9] group flex items-center px-2 py-2 text-sm font-medium rounded-md "
+											: "text-[#9A76D9] hover:bg-[#30253f] hover:text-[#9A76D9] group flex items-center px-2 py-2 text-sm font-medium rounded-md"
+									}
 								>
 									<item.icon
 										className={classNames(
@@ -293,7 +323,7 @@ const Layout = ({ children }) => {
 										aria-hidden="true"
 									/>
 									{item.name}
-								</Link>
+								</NavLink>
 							))}
 						</nav>
 					</div>

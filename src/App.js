@@ -16,7 +16,7 @@ function App() {
 			<GlobalProvider>
 				<Layout>
 					<Routes>
-						<Route path="/" element={<Index />} />
+						<Route exact path="/" element={<Index />} />
 						<Route path="/employee" element={<EmployeePage />} />
 						<Route path="/add-employee" element={<AddEmployee />} />
 						<Route path="/credits" element={<Credit />} />
