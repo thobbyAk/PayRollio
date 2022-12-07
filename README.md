@@ -1,9 +1,9 @@
 # PayRollio
-Automate your emloyee payments, perks and recognition in one simple dapp
+Automate your employee payments, perks and recognition in one simple dapp
 
 ## What it does
 
-Its an employee management system where you can create, modify and delete employees. Linked to an NFT system to prove eomployment in the company and also a DAO to vote for outstanding employees. This comes with an internal company token to buy perks and benefits.
+Its an employee management system where you can create, modify and delete employees. Linked to an NFT system to prove employment in the company and also a DAO to vote for outstanding employees. This comes with an internal company token to buy perks and benefits.
 
 
 
